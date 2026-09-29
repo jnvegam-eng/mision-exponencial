@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>🚀 Misión Exponencial</title>
+<style>
+*{box-sizing:border-box}
+body{margin:0;font-family:system-ui,-apple-system,Segoe UI,Arial,sans-serif;background:linear-gradient(135deg,#6c63ff,#ff5ea8 48%,#ffb84d);min-height:100vh;color:#25234a}
+button{font:inherit}
+.app{max-width:980px;margin:auto;padding:22px}
+.hero{background:#ffffffee;border-radius:28px;padding:22px 24px;box-shadow:0 16px 45px #39246b35;position:relative;overflow:hidden}
+.hero:after{content:"✦  ✧  ★  ✦  ✧";position:absolute;right:18px;top:12px;font-size:25px;color:#ff75ad;letter-spacing:8px;opacity:.65}
+.kicker{font-size:13px;font-weight:900;letter-spacing:1.4px;color:#6c63ff}
+h1{margin:3px 0;font-size:clamp(30px,5vw,46px);line-height:1}
+.subtitle{color:#6d6a83;margin-top:8px}
+.game{display:grid;grid-template-columns:1.35fr .65fr;gap:18px;margin-top:18px}
+.card{background:#fff;border-radius:25px;padding:22px;box-shadow:0 14px 35px #39246b2b}
+.topline{display:flex;justify-content:space-between;gap:10px;align-items:center;flex-wrap:wrap}
+.badge{padding:8px 12px;border-radius:999px;background:#fff0a8;color:#715500;font-weight:900}
+.progress{height:13px;background:#eeeafd;border-radius:99px;overflow:hidden;margin:14px 0}
+.bar{height:100%;width:0;background:linear-gradient(90deg,#6c63ff,#ff5ea8,#ffb84d);transition:width .45s}
+.question{font-size:clamp(21px,3.5vw,29px);font-weight:900;line-height:1.25;margin:20px 0 12px}
+.formula{background:linear-gradient(135deg,#eef0ff,#fff0f7);border:2px dashed #c9c4ff;border-radius:18px;padding:16px;text-align:center;font:800 22px ui-monospace,monospace;color:#5149b7;margin-bottom:18px}
+.options{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.option{border:2px solid #e4e1f4;border-radius:16px;background:#fff;padding:14px;min-height:58px;font-weight:800;cursor:pointer;transition:.18s;box-shadow:0 4px 0 #e4e1f4}
+.option:hover{transform:translateY(-2px);border-color:#8b83ff;background:#f8f7ff}
+.option:disabled{cursor:default}
+.option.correct{background:#dcfff0;border-color:#2fc78a;box-shadow:0 4px 0 #20a972}
+.option.wrong{background:#ffe3ed;border-color:#ff5f86;box-shadow:0 4px 0 #e84870}
+.feedback{margin-top:15px;padding:14px;border-radius:16px;background:#f5f4ff;min-height:55px;font-weight:700}
+.actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}
+.action{border:0;border-radius:14px;padding:12px 17px;font-weight:900;cursor:pointer}
+.hint{background:#fff0a8;color:#735600}.next{background:#6c63ff;color:#fff}.restart{background:#edf0f7;color:#55566c}
+.action:disabled{opacity:.45;cursor:not-allowed}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-top:12px}
+.stat{border-radius:18px;padding:15px;background:#f7f6fc;border:1px solid #eceaf5}
+.stat .label{font-size:12px;color:#77738b;font-weight:800;text-transform:uppercase}.num{font-size:28px;font-weight:950;margin-top:2px}
+.lives{letter-spacing:4px;font-size:22px}
+.tip{margin-top:18px;border-radius:18px;padding:15px;background:linear-gradient(135deg,#eafff6,#eef0ff);line-height:1.6}
+.hinttext{color:#6d6a83;margin-top:10px;font-size:14px}
+.spark{position:absolute;pointer-events:none;animation:pop .8s ease forwards;font-size:25px}
+@keyframes pop{0%{transform:translateY(0) scale(.5);opacity:0}30%{opacity:1}100%{transform:translateY(-70px) scale(1.3);opacity:0}}
+.shake{animation:shake .35s}.popin{animation:popin .35s}
+@keyframes shake{25%{transform:translateX(-6px)}50%{transform:translateX(6px)}75%{transform:translateX(-4px)}}
+@keyframes popin{0%{transform:scale(.95);opacity:.5}100%{transform:scale(1);opacity:1}}
+.end{text-align:center;padding:10px}.trophy{font-size:64px}.finalscore{font-size:42px;font-weight:950;color:#6c63ff}
+@media(max-width:720px){.game{grid-template-columns:1fr}.options{grid-template-columns:1fr}.app{padding:12px}.card,.hero{padding:18px}}
+</style>
+</head>
+<body>
+<div class="app" id="app">
+<header class="hero">
+<div class="kicker">🎮 JUEGO EDUCATIVO</div>
+<h1>🚀 Misión Exponencial</h1>
+<div class="subtitle">Responde, consigue combos y desbloquea la meta. ¡Demuestra que dominas las funciones exponenciales!</div>
+</header>
+
+<div class="game">
+<main class="card" id="main">
+<div class="topline"><span class="badge" id="level">🌱 Nivel 1</span><span class="badge" id="combo">🔥 Combo x0</span></div>
+<div class="progress"><div class="bar" id="bar"></div></div>
+<div class="question" id="question"></div>
+<div class="formula" id="formula"></div>
+<div class="options" id="options"></div>
+<div class="feedback" id="feedback" aria-live="polite">✨ Elige una respuesta para continuar.</div>
+<div class="actions">
+<button class="action hint" id="hint">💡 Pista</button>
+<button class="action next" id="next" disabled>Siguiente 🚀</button>
+<button class="action restart" id="restart">🔄 Reiniciar</button>
+</div>
+<div class="hinttext" id="hinttext"></div>
+</main>
+
+<aside class="card">
+<div class="kicker">🏆 MARCADOR</div>
+<div class="stats">
+<div class="stat"><div class="label">Puntos</div><div class="num" id="score">0</div></div>
+<div class="stat"><div class="label">Aciertos</div><div class="num" id="hits">0/8</div></div>
+<div class="stat"><div class="label">Vidas</div><div class="lives" id="lives">❤️❤️❤️</div></div>
+<div class="stat"><div class="label">Pregunta</div><div class="num" id="count">1/8</div></div>
+</div>
+<div class="tip">
+<b>🧠 Súper recordatorio</b><br>
+En <b>f(x)=a·bˣ</b>:<br>
+🌟 <b>b &gt; 1</b> → crece<br>
+🌙 <b>0 &lt; b &lt; 1</b> → decrece<br>
+🎯 <b>f(0)=a</b>
+</div>
+</aside>
+</div>
+</div>
+
+<script>
+const questions=[
+{q:"¿Cuánto vale f(3)?",f:"f(x)=2ˣ",o:["6","8","9","12"],a:1,h:"Sustituye x=3 y calcula 2³.",e:"¡Piensa en multiplicar 2 tres veces!"},
+{q:"¿La función es creciente o decreciente?",f:"f(x)=3·2ˣ",o:["📈 Creciente","📉 Decreciente","➡️ Constante","〰️ Lineal"],a:0,h:"Mira la base: 2.",e:"Si la base es mayor que 1, sube."},
+{q:"¿Cuál es el valor de f(0)?",f:"f(x)=5·4ˣ",o:["0","1","4","5"],a:3,h:"Recuerda cuánto vale 4⁰.",e:"Todo número distinto de cero elevado a 0 vale 1."},
+{q:"Encuentra la base de la función.",f:"f(x)=7·(1/2)ˣ",o:["7","1/2","2","x"],a:1,h:"Es el número que está elevado a x.",e:"La base está justo debajo del exponente."},
+{q:"¿Cuál de estas funciones es decreciente?",f:"Elige una opción",o:["f(x)=2ˣ","f(x)=4·3ˣ","f(x)=(1/3)ˣ","f(x)=8·5ˣ"],a:2,h:"Busca una base entre 0 y 1.",e:"Una base fraccionaria entre 0 y 1 produce decrecimiento."},
+{q:"Si f(x)=3ˣ, ¿cuánto vale f(2)?",f:"f(x)=3ˣ",o:["5","6","9","12"],a:2,h:"Calcula 3².",e:"3² significa 3×3."},
+{q:"¿Qué punto pertenece a f(x)=2ˣ?",f:"f(x)=2ˣ",o:["(0,0)","(1,1)","(2,4)","(3,6)"],a:2,h:"Prueba cada punto sustituyendo x.",e:"Para x=2, la función da 4."},
+{q:"Una cantidad se duplica cada hora. ¿Qué modelo la representa?",f:"Cantidad inicial = 100",o:["100+2x","100x²","100·2ˣ","2x+100"],a:2,h:"Duplicar repetidamente es crecimiento exponencial.",e:"La cantidad se multiplica por 2 en cada periodo."}
+];
+
+let i=0,score=0,hits=0,combo=0,lives=3,answered=false;
+const $=x=>document.getElementById(x);
+
+function render(){
+ const x=questions[i]; answered=false;
+ $("level").textContent="🌟 Nivel "+(i<3?1:i<6?2:3);
+ $("combo").textContent="🔥 Combo x"+combo;
+ $("question").textContent=x.q;$("formula").textContent=x.f;
+ $("count").textContent=(i+1)+"/8";$("hits").textContent=hits+"/8";
+ $("bar").style.width=(i/8*100)+"%";$("feedback").textContent="✨ Elige una respuesta para continuar.";
+ $("hinttext").textContent="";$("next").disabled=true;$("options").innerHTML="";
+ x.o.forEach((v,j)=>{let b=document.createElement("button");b.className="option";b.textContent=v;b.addEventListener("click",()=>answer(j,b));$("options").appendChild(b)});
+ $("main").classList.add("popin");setTimeout(()=>$("main").classList.remove("popin"),400);
+}
+function sparkle(){
+ for(let k=0;k<7;k++){let s=document.createElement("span");s.className="spark";s.textContent=["✨","⭐","🎉","💫"][k%4];s.style.left=(30+Math.random()*60)+"%";s.style.top=(35+Math.random()*35)+"%";$("main").appendChild(s);setTimeout(()=>s.remove(),850)}
+}
+function answer(j,btn){
+ if(answered)return;answered=true;const x=questions[i],bs=[...$("options").children];
+ bs.forEach((b,k)=>{b.disabled=true;if(k===x.a)b.classList.add("correct")});
+ if(j===x.a){
+   const pts=100+combo*50;score+=pts;hits++;combo++;btn.classList.add("correct");
+   $("feedback").textContent="🎉 ¡CORRECTO! +"+pts+" puntos. "+(combo>=3?"¡Combo increíble! 🔥":"¡Vas genial!");
+   sparkle();
+ }else{
+   combo=0;lives=Math.max(0,lives-1);btn.classList.add("wrong");
+   $("feedback").textContent="💡 Casi. "+x.e+" La respuesta era: "+x.o[x.a]+".";
+   $("main").classList.add("shake");setTimeout(()=>$("main").classList.remove("shake"),400);
+ }
+ update();$("next").disabled=false;
+}
+function update(){
+ $("score").textContent=score;$("hits").textContent=hits+"/8";$("combo").textContent="🔥 Combo x"+combo;
+ $("lives").textContent="❤️".repeat(lives)+"🖤".repeat(3-lives);
+ $("bar").style.width=((i+1)/8*100)+"%";
+}
+$("hint").onclick=()=>{$("hinttext").textContent="💡 "+questions[i].h};
+$("next").onclick=()=>{
+ if(!answered)return;
+ if(i<questions.length-1){i++;render()}else finish();
+};
+function finish(){
+ $("bar").style.width="100%";$("options").innerHTML="";
+ let msg=hits===8?"🏆 ¡MAESTRO/A EXPONENCIAL!":hits>=6?"🌟 ¡EXCELENTE TRABAJO!":hits>=4?"🚀 ¡MUY BIEN!":"💪 ¡Sigue practicando!";
+ $("question").innerHTML="<div class='end'><div class='trophy'>🏆</div><div>"+msg+"</div><div class='finalscore'>"+score+" puntos</div><p>Acertaste "+hits+" de 8 preguntas.</p><p>¿Puedes mejorar tu récord?</p></div>";
+ $("formula").textContent="🎊 ¡Misión completada! 🎊";$("feedback").textContent="Pulsa “Reiniciar” para jugar otra vez.";
+ $("next").disabled=true;sparkle();
+}
+$("restart").onclick=()=>{i=0;score=0;hits=0;combo=0;lives=3;update();render()};
+render();
+</script>
+</body>
+</html>
